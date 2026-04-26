@@ -1,4 +1,4 @@
-# SE2300-GenomicsDatabase
+# GenomicsDatabase
 This system is designed to facilitate the storage, retrieval, and analysis of cancer genomic data. Researchers can input genomic sequences, mutation data, and patient metadata for analysis. The system supports querying, visualization, and reporting functionalities to enhance cancer genomics research.
 
 Features
