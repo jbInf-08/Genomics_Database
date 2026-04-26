@@ -1,4 +1,15 @@
 # GenomicsDatabase
+[![CI](https://github.com/jbInf-08/Genomics_Database/actions/workflows/ci.yml/badge.svg)](https://github.com/jbInf-08/Genomics_Database/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
+
+## Golden path
+
+```bash
+pip install -r requirements-lock.txt
+python version_check.py
+python genomics_system.py --load-csv data/METABRIC_RNA_Mutation.csv
+```
+
 This system is designed to facilitate the storage, retrieval, and analysis of cancer genomic data. Researchers can input genomic sequences, mutation data, and patient metadata for analysis. The system supports querying, visualization, and reporting functionalities to enhance cancer genomics research.
 
 Features
