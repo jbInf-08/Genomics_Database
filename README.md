@@ -41,7 +41,7 @@ Usage
 Running the System
 
 Clone the repository:
-https://github.com/jbInf-08/SE2300-GenomicsDatabase.git
+https://github.com/jbInf-08/Genomics_Database.git
 
 Navigate to the project directory:
 cd GenomicsDatabase
