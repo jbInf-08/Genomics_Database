@@ -34,7 +34,7 @@ PostgreSQL (Optional, for database storage)
 Dependencies
 
 Run the following command to install required Python libraries:
-pip install pandas numpy matplotlib seaborn flask
+pip install -r requirements.txt
 
 Usage
 
@@ -57,13 +57,13 @@ To load the dataset from Kaggle:
 
 Download the cancer genomic dataset (e.g., METABRIC) from Kaggle (https://www.kaggle.com/datasets/raghadalharbi/breast-cancer-gene-expression-profiles-metabric?resource=download)
 
-Save it as METABRIC_RNA_Mutation.csv in the project directory.
+Save it as `data/METABRIC_RNA_Mutation.csv` in the project directory (the `data/` folder is git-ignored so large datasets are not committed).
 
 Run:
-python genomics_system.py --load-csv METABRIC_RNA_Mutation.csv
+python genomics_system.py --load-csv data/METABRIC_RNA_Mutation.csv
 
 Testing
 
 To verify system functionality, run:
-python version_system.py
+python version_check.py
 This script will check Python version, dependencies, and dataset accessibility.

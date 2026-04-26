@@ -6,6 +6,7 @@ import seaborn as sns
 from typing import Dict, List, Optional, Union
 import json
 import os
+import argparse
 
 class GeneSequence:
     def __init__(self, gene_id: str, sequence: str, mutation_status: str = None):
@@ -65,11 +66,14 @@ class CancerGenomicsDatabase:
             print(f"Loading data from {csv_path}...")
             df = pd.read_csv(csv_path)
             print(f"Found {len(df)} records. Processing...")
+            patient_id_column = next((c for c in df.columns if c.upper() == "PATIENT_ID"), None)
             
             # Process each row in the dataframe
             for index, row in df.iterrows():
-                # Create patient ID from index if not available
-                patient_id = str(index)
+                if patient_id_column and pd.notna(row.get(patient_id_column)):
+                    patient_id = str(row.get(patient_id_column))
+                else:
+                    patient_id = str(index)
                 
                 # Create a new patient record
                 patient = PatientRecord(patient_id=patient_id)
@@ -162,17 +166,40 @@ class CancerGenomicsDatabase:
         """Query patients by diagnosis."""
         return [p for p in self.patients.values() if p.diagnosis.lower() == diagnosis.lower()]
 
-# ... (rest of the code remains the same)
+class AnalysisTool:
+    @staticmethod
+    def generate_mutation_report(db: CancerGenomicsDatabase) -> str:
+        patient_count = len(db.patients)
+        mutation_rows = sum(len(patient.gene_sequences) for patient in db.patients.values())
+        return (
+            f"Mutation Report ({datetime.now().isoformat(timespec='seconds')})\n"
+            f"- Patients loaded: {patient_count}\n"
+            f"- Recorded mutation entries: {mutation_rows}"
+        )
+
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(description="Cancer Genomics Data Management System")
+    parser.add_argument("--csv", "--load-csv", dest="csv_path", help="Path to METABRIC CSV file")
+    parser.add_argument(
+        "--database-path",
+        default="genomics_data.json",
+        help="Path to local JSON database file",
+    )
+    return parser.parse_args()
+
 
 def main():
-    # Initialize database with CSV file
-    csv_path = r"C:\Users\jbaut\Downloads\archive.zip\METABRIC_RNA_Mutation.csv"
+    args = parse_args()
+    csv_path = args.csv_path
     try:
-        db = CancerGenomicsDatabase(csv_path=csv_path)
+        if csv_path:
+            db = CancerGenomicsDatabase(csv_path=csv_path, database_path=args.database_path)
+        else:
+            db = CancerGenomicsDatabase(database_path=args.database_path)
     except Exception as e:
         print(f"Failed to load CSV file: {e}")
         print("Starting with empty database...")
-        db = CancerGenomicsDatabase()
+        db = CancerGenomicsDatabase(database_path=args.database_path)
     
     while True:
         print("\nCancer Genomics Data Management System")
@@ -246,8 +273,11 @@ def main():
             print(report)
             
         elif choice == "6":
+            if not csv_path:
+                print("No CSV path configured. Re-run with --csv <path> (or --load-csv <path>).")
+                continue
             try:
-                db = CancerGenomicsDatabase(csv_path=csv_path)
+                db = CancerGenomicsDatabase(csv_path=csv_path, database_path=args.database_path)
                 print("Data reloaded successfully")
             except Exception as e:
                 print(f"Failed to reload data: {e}")
